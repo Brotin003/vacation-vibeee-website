@@ -10,6 +10,8 @@ import Testimonials from './components/Testimonials';
 import Footer from './components/Footer';
 import PackageDetails from './pages/PackageDetails';
 import ComingSoon from './pages/ComingSoon'; // <-- Import the new page
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
 
 const Home = () => (
   <>
@@ -35,6 +37,8 @@ function App() {
             {/* Catch-all for our incomplete pages */}
             <Route path="/stays" element={<ComingSoon />} />
             <Route path="/blog" element={<ComingSoon />} />
+            <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
         </main>
         <Footer />
