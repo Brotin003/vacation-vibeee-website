@@ -1,16 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { tourData } from '../data/tours';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import EnquireModal from '../components/EnquireModal';
 
 const PackageDetails = () => {
   const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tour, setTour] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   
-  const tour = tourData.find((t) => t.id === parseInt(id));
+  // Fetch specific tour from Firebase using the ID in the URL
+  useEffect(() => {
+    const fetchTourDetails = async () => {
+      try {
+        const docRef = doc(db, 'packages', id);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+          setTour({ id: docSnap.id, ...docSnap.data() });
+        } else {
+          console.error("No such tour package found!");
+        }
+      } catch (error) {
+        console.error("Error fetching package:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTourDetails();
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <div className="pt-40 text-center flex flex-col items-center min-h-screen">
+        <p className="text-xl font-bold text-gray-500 animate-pulse">Loading package details...</p>
+      </div>
+    );
+  }
 
   if (!tour) {
-    return <div className="pt-40 text-center text-2xl font-bold text-slate-900 h-screen">Tour package not found.</div>;
+    return (
+      <div className="pt-40 text-center text-2xl font-bold text-slate-900 h-screen">
+        Tour package not found.
+        <div className="mt-4">
+          <Link to="/" className="text-blue-600 text-sm hover:underline">Return to Home</Link>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -42,23 +80,37 @@ const PackageDetails = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2">
               <h2 className="text-2xl font-extrabold text-slate-900 mb-4">Overview</h2>
-              <p className="text-gray-600 leading-relaxed mb-10 text-lg">{tour.description}</p>
+              <p className="text-gray-600 leading-relaxed mb-10 text-lg whitespace-pre-wrap">{tour.description}</p>
 
-              <h2 className="text-2xl font-extrabold text-slate-900 mb-6">Itinerary</h2>
-              <div className="space-y-6">
-                {tour.itinerary.map((item, index) => (
-                  <div key={index} className="flex gap-4">
-                    <div className="flex flex-col items-center">
-                      <div className="w-4 h-4 rounded-full bg-orange-500 border-4 border-orange-100"></div>
-                      {index !== tour.itinerary.length - 1 && <div className="w-0.5 h-full bg-gray-200 my-1"></div>}
-                    </div>
-                    <div className="bg-slate-50 p-5 rounded-2xl border border-gray-100 flex-grow hover:shadow-md transition">
-                      <strong className="text-blue-600 block mb-2 font-black">{item.day}</strong>
-                      <span className="text-slate-700 font-medium">{item.plan}</span>
-                    </div>
+              {/* Render Itinerary only if it exists in the database */}
+              {tour.itinerary && tour.itinerary.length > 0 && (
+                <>
+                  <h2 className="text-2xl font-extrabold text-slate-900 mb-6">Itinerary</h2>
+                  <div className="space-y-0">
+                    {tour.itinerary.map((item, index) => (
+                      <div key={index} className="flex gap-6">
+                        {/* Timeline Connector */}
+                        <div className="flex flex-col items-center">
+                          <div className="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-sm z-10 shrink-0">
+                            D{index + 1}
+                          </div>
+                          {index !== tour.itinerary.length - 1 && (
+                            <div className="w-0.5 h-full bg-orange-100 mt-2 mb-2"></div>
+                          )}
+                        </div>
+                        
+                        {/* Day Content */}
+                        <div className="bg-slate-50 p-6 rounded-2xl border border-gray-100 flex-grow hover:shadow-md transition mb-6">
+                          <strong className="text-blue-600 block mb-2 font-black text-lg">{item.dayTitle}</strong>
+                          <span className="text-slate-700 font-medium leading-relaxed whitespace-pre-wrap block">
+                            {item.activities}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </>
+              )}
             </div>
 
             {/* Sticky Booking Card */}
@@ -67,7 +119,7 @@ const PackageDetails = () => {
                 <h3 className="text-xl font-bold mb-2">Ready to Book?</h3>
                 <p className="text-gray-400 text-sm mb-6">Secure your spot for this unforgettable journey.</p>
                 <button 
-                  onClick={() => setIsOpen(true)} 
+                  onClick={() => setIsModalOpen(true)} 
                   className="w-full bg-orange-500 text-white px-6 py-4 rounded-xl font-black hover:bg-orange-600 transition shadow-lg text-lg"
                 >
                   Enquire Now
@@ -78,7 +130,9 @@ const PackageDetails = () => {
         </div>
       </div>
       
-      <EnquireModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} tourDetails={tour} />
+      {isModalOpen && (
+        <EnquireModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} tourDetails={tour} />
+      )}
     </div>
   );
 };
