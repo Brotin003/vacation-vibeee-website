@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import myLogo from '../assets/vacation_vibe.jpeg';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <nav className="flex justify-between items-center px-6 lg:px-8 py-4 bg-white shadow-sm fixed w-full top-0 z-50">
-      <div className="flex items-center gap-2">
-        <span className="text-3xl text-blue-600 font-bold">✨</span>
-        <div>
-          <Link to="/" className="text-xl font-extrabold text-slate-900 tracking-tight leading-none block">
-            VACATION VIBEEE
-          </Link>
-          <span className="text-[10px] text-gray-500 font-medium uppercase tracking-wider">Good Vibes. Great Adventures.</span>
-        </div>
+      {/* Updated Logo Section */}
+      <div className="flex items-center">
+        <Link to="/" className="block">
+          <img 
+            src={myLogo} 
+            alt="Vacation Vibeee Logo" 
+            className="w-16 h-16 md:w-20 md:h-20 object-contain rounded-md" 
+          />
+        </Link>
       </div>
       
       {/* Desktop Menu */}
