@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { signOut } from 'firebase/auth';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { auth, db, storage } from '../firebase';
+import { auth, db } from '../firebase'; // Notice storage is removed
 import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
@@ -10,11 +9,9 @@ const AdminDashboard = () => {
   const [packages, setPackages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  // Form State
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   
   const [formData, setFormData] = useState({
     title: '', duration: '', rating: '', price: '', image: '', description: '', itinerary: []
@@ -41,12 +38,6 @@ const AdminDashboard = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleImageChange = (e) => {
-    if (e.target.files[0]) {
-      setImageFile(e.target.files[0]);
-    }
-  };
-
   // --- Dynamic Itinerary Handlers ---
   const handleAddDay = () => {
     setFormData({
@@ -65,49 +56,34 @@ const AdminDashboard = () => {
     const newItinerary = formData.itinerary.filter((_, i) => i !== index);
     setFormData({ ...formData, itinerary: newItinerary });
   };
-  // -----------------------------------
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsUploading(true);
-    
-    let imageUrl = formData.image;
+    setIsSaving(true);
 
     try {
-      if (imageFile) {
-        const imageRef = ref(storage, `packages/${Date.now()}_${imageFile.name}`);
-        const snapshot = await uploadBytes(imageRef, imageFile);
-        imageUrl = await getDownloadURL(snapshot.ref);
-      }
-
-      const finalData = { ...formData, image: imageUrl };
-
       if (isEditing) {
-        await updateDoc(doc(db, 'packages', currentId), finalData);
+        await updateDoc(doc(db, 'packages', currentId), formData);
       } else {
-        await addDoc(collection(db, 'packages'), finalData);
+        await addDoc(collection(db, 'packages'), formData);
       }
 
       setFormData({ title: '', duration: '', rating: '', price: '', image: '', description: '', itinerary: [] });
-      setImageFile(null);
       setIsEditing(false);
       setCurrentId(null);
-      document.getElementById('image-upload').value = '';
       fetchPackages();
 
     } catch (error) {
       console.error("Error saving package:", error);
-      alert("An error occurred while saving. Please try again.");
+      alert("An error occurred while saving. Please check your Firestore rules.");
     } finally {
-      setIsUploading(false);
+      setIsSaving(false);
     }
   };
 
   const handleEdit = (pkg) => {
     setIsEditing(true);
     setCurrentId(pkg.id);
-    setImageFile(null);
-    document.getElementById('image-upload').value = '';
     
     setFormData({
       title: pkg.title || '', 
@@ -116,7 +92,7 @@ const AdminDashboard = () => {
       price: pkg.price || '', 
       image: pkg.image || '', 
       description: pkg.description || '',
-      itinerary: pkg.itinerary || [] // Load existing itinerary if available
+      itinerary: pkg.itinerary || []
     });
   };
 
@@ -152,8 +128,19 @@ const AdminDashboard = () => {
                 <input type="text" name="price" value={formData.price} onChange={handleChange} placeholder="Price (e.g. 22,500)" required className="w-full px-4 py-3 bg-slate-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm font-medium" />
               </div>
               
+              {/* IMAGE URL FIELD */}
               <div>
-                <input type="file" id="image-upload" accept="image/*" onChange={handleImageChange} className="w-full px-4 py-3 bg-slate-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm font-medium file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" required={!isEditing && !formData.image} />
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Image URL</label>
+                <input 
+                  type="url" 
+                  name="image" 
+                  value={formData.image} 
+                  onChange={handleChange} 
+                  placeholder="Paste direct image link here..." 
+                  required 
+                  className="w-full px-4 py-3 bg-slate-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm font-medium" 
+                />
+                <p className="text-xs text-gray-400 mt-2">Upload images to <a href="https://imgbb.com/" target="_blank" rel="noreferrer" className="text-blue-500 underline">ImgBB</a> and paste the link here.</p>
               </div>
 
               <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Tour Description" rows="2" required className="w-full px-4 py-3 bg-slate-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-600 focus:outline-none text-sm font-medium"></textarea>
@@ -177,12 +164,12 @@ const AdminDashboard = () => {
                 ))}
               </div>
 
-              <button type="submit" disabled={isUploading} className={`w-full font-bold py-3 rounded-xl transition text-white ${isUploading ? 'bg-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-slate-800'}`}>
-                {isUploading ? 'Uploading & Saving...' : (isEditing ? 'Update Package' : 'Save Package')}
+              <button type="submit" disabled={isSaving} className={`w-full font-bold py-3 rounded-xl transition text-white ${isSaving ? 'bg-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-slate-800'}`}>
+                {isSaving ? 'Saving Package...' : (isEditing ? 'Update Package' : 'Save Package')}
               </button>
               
               {isEditing && (
-                <button type="button" disabled={isUploading} onClick={() => { setIsEditing(false); setFormData({ title: '', duration: '', rating: '', price: '', image: '', description: '', itinerary: [] }); setImageFile(null); document.getElementById('image-upload').value = ''; }} className="w-full mt-2 bg-gray-100 text-slate-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition">
+                <button type="button" disabled={isSaving} onClick={() => { setIsEditing(false); setFormData({ title: '', duration: '', rating: '', price: '', image: '', description: '', itinerary: [] }); }} className="w-full mt-2 bg-gray-100 text-slate-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition">
                   Cancel Edit
                 </button>
               )}
