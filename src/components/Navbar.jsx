@@ -7,7 +7,7 @@ const Navbar = () => {
 
   return (
     <nav className="flex justify-between items-center px-6 lg:px-8 py-4 bg-white shadow-sm fixed w-full top-0 z-50">
-      {/* Updated Logo Section */}
+      {/* Logo Section */}
       <div className="flex items-center">
         <Link to="/" className="block">
           <img 
@@ -33,10 +33,6 @@ const Navbar = () => {
           <Link to="/blog">BLOG</Link>
         </li>
       </ul>
-      
-      <button className="hidden md:block bg-orange-500 text-white px-6 py-2.5 rounded-lg font-bold hover:bg-orange-600 transition shadow-sm">
-        PLAN A TRIP
-      </button>
 
       {/* Mobile Hamburger */}
       <button 
@@ -59,9 +55,6 @@ const Navbar = () => {
           <Link to="/" onClick={() => setIsOpen(false)} className="text-slate-900 font-bold hover:text-blue-600">PACKAGES</Link>
           <Link to="/stays" onClick={() => setIsOpen(false)} className="text-slate-900 font-bold hover:text-blue-600">STAYS</Link>
           <Link to="/blog" onClick={() => setIsOpen(false)} className="text-slate-900 font-bold hover:text-blue-600">BLOG</Link>
-          <button className="bg-orange-500 text-white px-8 py-3 rounded-lg font-bold hover:bg-orange-600 transition w-3/4 mt-4">
-            PLAN A TRIP
-          </button>
         </div>
       )}
     </nav>
