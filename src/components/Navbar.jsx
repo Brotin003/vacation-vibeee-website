@@ -5,6 +5,27 @@ import myLogo from '../assets/vacation_vibe.jpeg';
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Custom smooth scroll handler
+  const handlePackageClick = (e) => {
+    // Only intercept the click if we are already on the home page
+    if (window.location.pathname === '/') {
+      e.preventDefault(); 
+      setIsOpen(false); // Close mobile menu if it's open
+
+      const target = document.getElementById('packages');
+      if (target) {
+        // Calculate position and subtract 100px for the navbar height offset
+        const targetPosition = target.getBoundingClientRect().top + window.scrollY - 100;
+        
+        // Scroll smoothly to the exact calculated position
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+      }
+    }
+  };
+
   return (
     <nav className="flex justify-between items-center px-6 lg:px-8 py-4 bg-white shadow-sm fixed w-full top-0 z-50">
       {/* Logo Section */}
@@ -24,7 +45,7 @@ const Navbar = () => {
           <Link to="/">HOME</Link>
         </li>
         <li className="hover:text-blue-600 cursor-pointer transition-colors">
-          <Link to="/">PACKAGES</Link>
+          <a href="/#packages" onClick={handlePackageClick}>PACKAGES</a>
         </li>
         <li className="hover:text-blue-600 cursor-pointer transition-colors">
           <Link to="/stays">STAYS</Link>
@@ -52,7 +73,7 @@ const Navbar = () => {
       {isOpen && (
         <div className="absolute top-[72px] left-0 w-full bg-white shadow-xl flex flex-col items-center py-6 space-y-4 md:hidden border-t border-gray-100">
           <Link to="/" onClick={() => setIsOpen(false)} className="text-slate-900 font-bold hover:text-blue-600">HOME</Link>
-          <Link to="/" onClick={() => setIsOpen(false)} className="text-slate-900 font-bold hover:text-blue-600">PACKAGES</Link>
+          <a href="/#packages" onClick={handlePackageClick} className="text-slate-900 font-bold hover:text-blue-600">PACKAGES</a>
           <Link to="/stays" onClick={() => setIsOpen(false)} className="text-slate-900 font-bold hover:text-blue-600">STAYS</Link>
           <Link to="/blog" onClick={() => setIsOpen(false)} className="text-slate-900 font-bold hover:text-blue-600">BLOG</Link>
         </div>

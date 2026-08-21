@@ -15,7 +15,7 @@ const Footer = () => {
             </div>
           </div>
           <p className="text-gray-400 text-sm mb-6 leading-relaxed max-w-sm">
-            We specialize in crafting unforgettable travel experiences, offering meticulously planned itineraries and personalized services to make your dream journey extraordinary.
+          We don’t just book trips; we craft seamless adventures. With tailor-made itineraries, pristine stays, expert driver-guides, and 24/7 support, all you have to do is show up and soak in the vacation vibe.
           </p>
         </div>
 
@@ -35,7 +35,7 @@ const Footer = () => {
           <h3 className="text-sm font-bold uppercase tracking-wider mb-6 text-gray-300">Contact Us</h3>
           <div className="space-y-4 text-sm text-gray-400 font-medium">
             <p className="flex items-center gap-3">
-              <span className="text-blue-500 text-lg">📞</span> +91 70318 21275
+              <span className="text-blue-500 text-lg">📞</span> +91 9800951414
             </p>
             <p className="flex items-center gap-3">
               <span className="text-blue-500 text-lg">✉️</span> team@vacationvibeee.com

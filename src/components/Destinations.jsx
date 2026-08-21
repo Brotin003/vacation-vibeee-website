@@ -2,10 +2,10 @@ import React from 'react';
 
 const Destinations = () => {
   const destinations = [
-    { name: 'Assam', desc: 'Lush tea gardens and vibrant wildlife', img: 'https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&w=600&q=80' },
-    { name: 'Bhutan', desc: 'Peaceful serenity of the Himalayas', img: 'https://images.unsplash.com/photo-1516815231560-8f41ec531527?auto=format&fit=crop&w=600&q=80' },
-    { name: 'Meghalaya', desc: 'The Abode of Clouds and living roots', img: 'https://images.unsplash.com/photo-1629851603507-6c84c176378e?auto=format&fit=crop&w=600&q=80' },
-    { name: 'Sikkim', desc: 'Stunning mountain vistas and heritage', img: 'https://images.unsplash.com/photo-1601248068532-60144f80879f?auto=format&fit=crop&w=600&q=80' }
+    { name: 'Assam', desc: 'Lush tea gardens and vibrant wildlife', img: 'https://t4.ftcdn.net/jpg/01/79/44/13/360_F_179441368_Xr65XnnMkZipgdMkHGypTaZeYyQMQXQn.jpg' },
+    { name: 'Bhutan', desc: 'Peaceful serenity of the Himalayas', img: 'https://t3.ftcdn.net/jpg/01/79/70/56/360_F_179705627_8Njoqi3oOOBdJRsafwouCNDV9hdjWn9U.jpg' },
+    { name: 'Meghalaya', desc: 'The Abode of Clouds and living roots', img: 'https://images.unsplash.com/photo-1625826415766-001bd75aaf52?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+    { name: 'Sikkim', desc: 'Stunning mountain vistas and heritage', img: 'https://t4.ftcdn.net/jpg/02/24/29/81/360_F_224298196_zOmmoV8IKFZSszfQINgSAd3JIzBGBWi0.jpg' }
   ];
 
   return (
