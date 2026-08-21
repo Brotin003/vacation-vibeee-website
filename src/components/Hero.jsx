@@ -9,7 +9,7 @@ const Hero = () => {
       {/* Text Container */}
       <div className="relative z-10 max-w-7xl mx-auto text-center text-white">
         <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-        Zero Stress.<span className="text-orange-500">100% Good Vibes.</span>
+        Zero Stress.<span className="text-orange-500">Great Vibes.</span>
         </h1>
         {/* Increased bottom margin (mb-32) to ensure text never touches the floating box */}
         <p className="text-lg md:text-xl font-medium max-w-2xl mx-auto mb-32 text-gray-100 leading-relaxed">

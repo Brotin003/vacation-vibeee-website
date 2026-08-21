@@ -11,7 +11,7 @@ const Footer = () => {
             <span className="text-3xl text-blue-500 font-bold">✨</span>
             <div>
               <span className="text-xl font-extrabold tracking-tight block leading-none">VACATION VIBEEE</span>
-              <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Good Vibes. Great Adventures.</span>
+              <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Zero Stress. Great Vibes.</span>
             </div>
           </div>
           <p className="text-gray-400 text-sm mb-6 leading-relaxed max-w-sm">
